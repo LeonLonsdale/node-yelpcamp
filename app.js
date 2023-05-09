@@ -3,6 +3,8 @@
 // packages
 import express from 'express';
 import methodOverride from 'method-override';
+import morgan from 'morgan';
+import ejsMate from 'ejs-mate';
 
 // node modules
 import path from 'path';
@@ -22,12 +24,16 @@ export const app = express();
 
 // ### [ Express Middleware ]
 
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+// ### [ Package Middleware ]
+
 app.use(methodOverride('_method'));
+app.use(morgan('dev'));
 
 // ### [ Routes ]
 
