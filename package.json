@@ -19,6 +19,7 @@
     "mongoose": "^7.1.0"
   },
   "devDependencies": {
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "prettier": "^2.8.8"
   }
 }
