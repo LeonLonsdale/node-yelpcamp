@@ -5,6 +5,7 @@ import express from 'express';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import ejsMate from 'ejs-mate';
+import Joi from 'joi';
 
 // node modules
 import path from 'path';
@@ -14,6 +15,7 @@ import { fileURLToPath } from 'url';
 import { Campground } from './models/campground.js';
 import { catchAsync } from './utils/catchAsync.js';
 import AppError from './utils/AppError.js';
+import { campgroundSchema } from './JoiSchemas.js';
 
 // ### [ Declarations ]
 
@@ -51,11 +53,19 @@ app.get('/campgrounds/new', (req, res) => {
   res.render('campgrounds/new');
 });
 
+const validateCampground = (req, res, next) => {
+  const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const message = error.details.map((element) => element.message).join(', ');
+    throw new AppError(message, 400);
+  }
+  next();
+};
+
 app.post(
   '/campgrounds',
+  validateCampground,
   catchAsync(async (req, res) => {
-    if (!req.body.campground)
-      throw new AppError('Invalid data submission', 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`campgrounds/${campground._id}`);
@@ -80,6 +90,7 @@ app.get(
 
 app.put(
   '/campgrounds/:id',
+  validateCampground,
   catchAsync(async (req, res) => {
     const campground = await Campground.findByIdAndUpdate(req.params.id, {
       ...req.body.campground,
