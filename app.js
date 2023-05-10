@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url';
 // custom modules
 import { Campground } from './models/campground.js';
 import { catchAsync } from './utils/catchAsync.js';
+import AppError from './utils/AppError.js';
 
 // ### [ Declarations ]
 
@@ -53,6 +54,8 @@ app.get('/campgrounds/new', (req, res) => {
 app.post(
   '/campgrounds',
   catchAsync(async (req, res) => {
+    if (!req.body.campground)
+      throw new AppError('Invalid data submission', 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`campgrounds/${campground._id}`);
@@ -94,6 +97,11 @@ app.delete(
   })
 );
 
+app.all('*', (req, res, next) => {
+  next(new AppError('Page not found', 404));
+});
+
 app.use((err, req, res, next) => {
-  res.send('Error yo! What you doing son?');
+  const { status = 500, message = 'Something went wrong' } = err;
+  res.status(status).send(message);
 });
