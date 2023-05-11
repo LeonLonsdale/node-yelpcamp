@@ -15,7 +15,7 @@ import { Campground } from './models/campground.js';
 import { Review } from './models/review.js';
 import { catchAsync } from './utils/catchAsync.js';
 import AppError from './utils/AppError.js';
-import { campgroundSchema } from './JoiSchemas.js';
+import { campgroundSchema, reviewSchema } from './JoiSchemas.js';
 
 // ### [ Declarations ]
 
@@ -39,6 +39,26 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
 
+// ### [ Joi Validations ]
+
+const validateCampground = (req, res, next) => {
+  const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const message = error.details.map((element) => element.message).join(', ');
+    throw new AppError(message, 400);
+  }
+  next();
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  if (error) {
+    const message = error.details.map((element) => element.message).join(', ');
+    throw new AppError(message, 400);
+  }
+  next();
+};
+
 // ### [ Routes ]
 
 app.get('/', (req, res) => res.render('home.ejs'));
@@ -52,15 +72,6 @@ app.get('/campgrounds', async (req, res) => {
 app.get('/campgrounds/new', (req, res) => {
   res.render('campgrounds/new');
 });
-
-const validateCampground = (req, res, next) => {
-  const { error } = campgroundSchema.validate(req.body);
-  if (error) {
-    const message = error.details.map((element) => element.message).join(', ');
-    throw new AppError(message, 400);
-  }
-  next();
-};
 
 app.post(
   '/campgrounds',
