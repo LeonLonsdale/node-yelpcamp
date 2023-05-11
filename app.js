@@ -86,7 +86,9 @@ app.post(
 app.get(
   '/campgrounds/:id',
   catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findById(req.params.id).populate(
+      'reviews'
+    );
     res.status(200).render('campgrounds/show', { campground });
   })
 );
@@ -121,6 +123,7 @@ app.delete(
 
 app.post(
   '/campgrounds/:id/reviews',
+  validateReview,
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
