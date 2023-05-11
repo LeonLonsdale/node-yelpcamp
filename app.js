@@ -5,7 +5,6 @@ import express from 'express';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import ejsMate from 'ejs-mate';
-import Joi from 'joi';
 
 // node modules
 import path from 'path';

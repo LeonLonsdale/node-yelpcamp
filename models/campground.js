@@ -1,4 +1,4 @@
-import mongoose, {Schema, model} from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 const campgroundSchema = new Schema({
   title: String,
@@ -6,6 +6,12 @@ const campgroundSchema = new Schema({
   description: String,
   location: String,
   image: String,
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Review',
+    },
+  ],
 });
 
 export const Campground = model('Campground', campgroundSchema);
