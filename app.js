@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url';
 
 // custom modules
 import { Campground } from './models/campground.js';
+import { Review } from './models/review.js';
 import { catchAsync } from './utils/catchAsync.js';
 import AppError from './utils/AppError.js';
 import { campgroundSchema } from './JoiSchemas.js';
@@ -104,6 +105,18 @@ app.delete(
     const { id } = req.params;
     const campground = await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
+  })
+);
+
+app.post(
+  '/campgrounds/:id/reviews',
+  catchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review._id);
+    await campground.save();
+    await review.save();
+    res.redirect(`/campgrounds/${campground._id}`);
   })
 );
 
