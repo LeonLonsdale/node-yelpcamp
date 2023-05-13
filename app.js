@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url';
 // custom modules
 import AppError from './utils/AppError.js';
 import { router as campgroundsRouter } from './routes/campground.js';
+import { router as reviewsRouter } from './routes/review.js';
 
 // ### [ Declarations ]
 
@@ -40,6 +41,7 @@ app.use(morgan('dev'));
 
 app.get('/', (req, res) => res.render('home.ejs'));
 app.use('/campgrounds', campgroundsRouter);
+app.use('/campgrounds/:id/reviews', reviewsRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError('Page not found', 404));

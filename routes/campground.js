@@ -10,12 +10,6 @@ import {
   renderUpdateCampgroundForm,
 } from '../controllers/campground.js';
 
-import {
-  validateReview,
-  createReview,
-  deleteReview,
-} from '../controllers/review.js';
-
 export const router = Router();
 
 router
@@ -32,7 +26,3 @@ router
   .delete(deleteCampground);
 
 router.route('/:id/edit').get(renderUpdateCampgroundForm);
-
-router.route('/:id/reviews').post(validateReview, createReview);
-
-router.route('/:id/reviews/:reviewId').delete(deleteReview);
