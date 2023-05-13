@@ -5,6 +5,7 @@ import express from 'express';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import ejsMate from 'ejs-mate';
+import session from 'express-session';
 
 // node modules
 import path from 'path';
@@ -19,6 +20,16 @@ import { router as reviewsRouter } from './routes/review.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const sessionOptions = {
+  secret: 'veryverysecretstuffyoudontknowabout',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
 
 // ### [ Create App ]
 
@@ -37,6 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
+app.use(session(sessionOptions));
 
 // ### [ Routes ]
 
