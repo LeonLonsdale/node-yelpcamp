@@ -22,6 +22,7 @@ export const showAllCampgrounds = catchAsync(async (req, res) => {
 export const createCampground = catchAsync(async (req, res) => {
   const campground = new Campground(req.body.campground);
   await campground.save();
+  req.flash('success', 'Campground created successfully');
   res.redirect(`campgrounds/${campground._id}`);
 });
 

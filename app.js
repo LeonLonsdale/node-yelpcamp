@@ -6,6 +6,7 @@ import methodOverride from 'method-override';
 import morgan from 'morgan';
 import ejsMate from 'ejs-mate';
 import session from 'express-session';
+import flash from 'connect-flash';
 
 // node modules
 import path from 'path';
@@ -49,6 +50,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
 app.use(session(sessionOptions));
+app.use(flash());
+
+// ### [ Custom Middleware ]
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+});
 
 // ### [ Routes ]
 
