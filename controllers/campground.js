@@ -31,6 +31,13 @@ export const showCampground = catchAsync(async (req, res) => {
   const campground = await Campground.findById(req.params.id).populate(
     'reviews'
   );
+  if (!campground) {
+    req.flash(
+      'error',
+      'This campground does not exist. It may have been deleted'
+    );
+    return res.redirect('/campgrounds');
+  }
   res.status(200).render('campgrounds/show', { campground });
 });
 
@@ -38,6 +45,13 @@ export const updateCampground = catchAsync(async (req, res) => {
   const campground = await Campground.findByIdAndUpdate(req.params.id, {
     ...req.body.campground,
   });
+  if (!campground) {
+    req.flash(
+      'error',
+      'This campground does not exist. It may have been deleted'
+    );
+    return res.redirect('/campgrounds');
+  }
   req.flash('success', 'Campground updated successfully');
   res.redirect(`/campgrounds/${campground._id}`);
 });
