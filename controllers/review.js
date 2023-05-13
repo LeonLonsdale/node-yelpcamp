@@ -20,6 +20,7 @@ export const createReview = catchAsync(async (req, res) => {
   campground.reviews.push(review._id);
   await campground.save();
   await review.save();
+  req.flash('success', 'Review added successfully');
   res.redirect(`/campgrounds/${campground._id}`);
 });
 
@@ -29,5 +30,6 @@ export const deleteReview = catchAsync(async (req, res) => {
     $pull: { reviews: reviewId },
   });
   const review = await Review.findByIdAndDelete(reviewId);
+  req.flash('success', 'Review deleted successfully');
   res.redirect(`/campgrounds/${id}`);
 });

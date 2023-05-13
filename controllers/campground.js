@@ -38,12 +38,14 @@ export const updateCampground = catchAsync(async (req, res) => {
   const campground = await Campground.findByIdAndUpdate(req.params.id, {
     ...req.body.campground,
   });
+  req.flash('success', 'Campground updated successfully');
   res.redirect(`/campgrounds/${campground._id}`);
 });
 
 export const deleteCampground = catchAsync(async (req, res) => {
   const { id } = req.params;
   const campground = await Campground.findByIdAndDelete(id);
+  req.flash('success', 'Campground deleted successfully');
   res.redirect('/campgrounds');
 });
 
