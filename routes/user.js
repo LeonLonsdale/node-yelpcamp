@@ -9,6 +9,8 @@ import {
   logout,
 } from '../controllers/user.js';
 
+import { storeReturnTo } from '../controllers/auth.js';
+
 export const router = Router();
 
 router.route('/register').get(renderRegisterForm).post(createUser);
@@ -16,6 +18,7 @@ router
   .route('/login')
   .get(renderLoginForm)
   .post(
+    storeReturnTo,
     passport.authenticate('local', {
       failureFlash: true,
       failureRedirect: '/campgrounds',

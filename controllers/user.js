@@ -19,7 +19,8 @@ export const createUser = async (req, res, next) => {
 
 export const login = (req, res) => {
   req.flash('success', 'Welcome back');
-  res.redirect('/campgrounds');
+  const redirectUrl = res.locals.returnTo || '/campgrounds';
+  res.redirect(redirectUrl);
 };
 
 export const logout = (req, res, next) => {
