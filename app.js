@@ -7,12 +7,15 @@ import morgan from 'morgan';
 import ejsMate from 'ejs-mate';
 import session from 'express-session';
 import flash from 'connect-flash';
+import passport from 'passport';
+import localStrategy from 'passport-local';
 
 // node modules
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 // custom modules
+import { User } from './models/user.js';
 import AppError from './utils/AppError.js';
 import { router as campgroundsRouter } from './routes/campground.js';
 import { router as reviewsRouter } from './routes/review.js';
@@ -47,9 +50,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ### [ Package Middleware ]
 
+app.use(session(sessionOptions));
+app.use(passport.initialize()); // NOTES
+app.use(passport.session()); // NOTES must come before express session
+passport.use(new localStrategy(User.authenticate)); // NOTES tell passport to use the local strategy, and the authentication method is on the user model (added by passport-local-mongoose)
+passport.serializeUser(User.serializeUser()); // NOTES tell passport how to serialise a user. Serialising is how we store user data in the session
+passport.deserializeUser(User.deserializeUser()); // NOTES tell passport how to deserialise a user.
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
-app.use(session(sessionOptions));
 app.use(flash());
 
 // ### [ Custom Middleware ]
