@@ -19,6 +19,7 @@ import { User } from './models/user.js';
 import AppError from './utils/AppError.js';
 import { router as campgroundsRouter } from './routes/campground.js';
 import { router as reviewsRouter } from './routes/review.js';
+import { router as usersRouter } from './routes/user.js';
 
 // ### [ Declarations ]
 
@@ -51,11 +52,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ### [ Package Middleware ]
 
 app.use(session(sessionOptions));
-app.use(passport.initialize()); // NOTES
-app.use(passport.session()); // NOTES must come before express session
-passport.use(new localStrategy(User.authenticate)); // NOTES tell passport to use the local strategy, and the authentication method is on the user model (added by passport-local-mongoose)
-passport.serializeUser(User.serializeUser()); // NOTES tell passport how to serialise a user. Serialising is how we store user data in the session
-passport.deserializeUser(User.deserializeUser()); // NOTES tell passport how to deserialise a user.
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
 app.use(flash());
@@ -73,6 +74,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => res.render('home.ejs'));
 app.use('/campgrounds', campgroundsRouter);
 app.use('/campgrounds/:id/reviews', reviewsRouter);
+app.use('/', usersRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError('Page not found', 404));
