@@ -6,6 +6,7 @@ import {
   createUser,
   renderLoginForm,
   login,
+  logout,
 } from '../controllers/user.js';
 
 export const router = Router();
@@ -21,3 +22,5 @@ router
     }),
     login
   );
+
+router.route('/logout').get(logout);

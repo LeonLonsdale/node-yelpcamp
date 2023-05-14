@@ -19,6 +19,16 @@ export const login = (req, res) => {
   res.redirect('/campgrounds');
 };
 
+export const logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    req.flash('success', `You've logged out! Come back soon.`);
+    res.redirect('/campgrounds');
+  });
+};
+
 // render pages
 export const renderRegisterForm = (req, res) => {
   res.render('users/register');
