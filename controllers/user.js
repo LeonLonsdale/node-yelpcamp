@@ -1,11 +1,14 @@
 import { User } from '../models/user.js';
 import { catchAsync } from '../utils/catchAsync.js';
 
-export const createUser = async (req, res) => {
+export const createUser = async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
     const newUser = new User({ email, username });
     const user = await User.register(newUser, password);
+    req.login(user, (err) => {
+      if (err) return next(err);
+    });
     req.flash('success', 'Welcome to Yelpcamp');
     res.redirect('/campgrounds');
   } catch (err) {
