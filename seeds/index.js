@@ -1,7 +1,7 @@
-import mongoose, {connect} from 'mongoose';
-import {Campground} from '../models/campground.js';
+import mongoose, { connect } from 'mongoose';
+import { Campground } from '../models/campground.js';
 import cities from './cities.js';
-import {places, descriptors} from './seedHelpers.js';
+import { places, descriptors } from './seedHelpers.js';
 
 async function main() {
   await connect('mongodb://localhost:27017/yelp-camp').then(() =>
@@ -21,6 +21,7 @@ const seedDB = async () => {
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       image: 'https://source.unsplash.com/collection/483251',
+      author: '6460fbb1a13a782a30ee4d72',
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget dolor morbi non arcu risus quis varius quam quisque. Facilisis leo vel fringilla est ullamcorper eget nulla. Enim nulla aliquet porttitor lacus luctus.',
       price,

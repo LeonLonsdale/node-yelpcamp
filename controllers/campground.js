@@ -21,6 +21,7 @@ export const showAllCampgrounds = catchAsync(async (req, res) => {
 
 export const createCampground = catchAsync(async (req, res) => {
   const campground = new Campground(req.body.campground);
+  campground.author = req.user._id;
   await campground.save();
   req.flash('success', 'Campground created successfully');
   res.redirect(`campgrounds/${campground._id}`);
@@ -28,9 +29,9 @@ export const createCampground = catchAsync(async (req, res) => {
 
 // campground/:id
 export const showCampground = catchAsync(async (req, res) => {
-  const campground = await Campground.findById(req.params.id).populate(
-    'reviews'
-  );
+  const campground = await Campground.findById(req.params.id)
+    .populate('reviews')
+    .populate('author');
   if (!campground) {
     req.flash(
       'error',
