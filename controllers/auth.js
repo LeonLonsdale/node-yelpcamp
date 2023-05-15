@@ -1,4 +1,5 @@
 import { Campground } from '../models/campground.js';
+import { Review } from '../models/review.js';
 import { catchAsync } from '../utils/catchAsync.js';
 
 export const isLoggedIn = (req, res, next) => {
@@ -16,6 +17,16 @@ export const isAuthor = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const campground = await Campground.findById(id);
   if (!campground.author.equals(req.user._id)) {
+    req.flash('error', 'You do not have permission to do this');
+    return res.redirect(`/campgrounds/${id}`);
+  }
+  next();
+});
+
+export const isReviewAuthor = catchAsync(async (req, res, next) => {
+  const { id, reviewId } = req.params;
+  const review = await Review.findById(reviewId);
+  if (!review.author.equals(req.user._id)) {
     req.flash('error', 'You do not have permission to do this');
     return res.redirect(`/campgrounds/${id}`);
   }

@@ -31,7 +31,7 @@ export const createCampground = catchAsync(async (req, res) => {
 export const showCampground = catchAsync(async (req, res) => {
   console.log(res.locals);
   const campground = await Campground.findById(req.params.id)
-    .populate('reviews')
+    .populate({ path: 'reviews', populate: { path: 'author' } })
     .populate('author');
   if (!campground) {
     req.flash(

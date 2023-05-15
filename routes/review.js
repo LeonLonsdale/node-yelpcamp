@@ -4,10 +4,10 @@ import {
   createReview,
   deleteReview,
 } from '../controllers/review.js';
-import { isLoggedIn } from '../controllers/auth.js';
+import { isLoggedIn, isReviewAuthor } from '../controllers/auth.js';
 
 export const router = Router({ mergeParams: true });
 
 router.route('/').post(isLoggedIn, validateReview, createReview);
 
-router.route('/:reviewId').delete(isLoggedIn, deleteReview);
+router.route('/:reviewId').delete(isLoggedIn, isReviewAuthor, deleteReview);
