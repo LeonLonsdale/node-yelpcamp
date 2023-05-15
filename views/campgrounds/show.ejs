@@ -1,7 +1,9 @@
 <% layout('/layouts/boilerplate')%>
 
 <div class="row mb-3">
-  <div class="col-6">
+  <div
+    class="col-6 <% if (!user && !campground.reviews.length) { %> offset-3 <% } %>"
+  >
     <div class="card mb-3">
       <img src="<%=campground.image%>" class="card-img-top" alt="..." />
       <div class="card-body">
@@ -35,6 +37,7 @@
     </div>
   </div>
   <div class="col-6">
+    <% if (user) { %>
     <!-- Reviews -->
     <h2>Leave a Review</h2>
     <form
@@ -68,6 +71,7 @@
       </div>
       <button class="btn btn-success">Add Review</button>
     </form>
+    <% } %>
     <div class="mb-3">
       <% for (let review of campground.reviews) { %>
       <div class="card mb-3">
@@ -78,7 +82,9 @@
             action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
             method="POST"
           >
+            <% if (user && review.author.equals(user._id)) {%>
             <button class="btn btn-sm btn-danger">Delete</button>
+            <% } %>
           </form>
         </div>
       </div>

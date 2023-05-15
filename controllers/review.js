@@ -18,6 +18,7 @@ export const createReview = catchAsync(async (req, res) => {
   const campground = await Campground.findById(req.params.id);
   const review = new Review(req.body.review);
   campground.reviews.push(review._id);
+  review.author = req.user._id;
   await campground.save();
   await review.save();
   req.flash('success', 'Review added successfully');
