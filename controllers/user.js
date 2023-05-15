@@ -8,9 +8,9 @@ export const createUser = async (req, res, next) => {
     const user = await User.register(newUser, password);
     req.login(user, (err) => {
       if (err) return next(err);
+      req.flash('success', 'Welcome to Yelpcamp');
+      res.redirect('/campgrounds');
     });
-    req.flash('success', 'Welcome to Yelpcamp');
-    res.redirect('/campgrounds');
   } catch (err) {
     req.flash('error', err.message);
     res.redirect(req.url);

@@ -44,6 +44,7 @@ export const showCampground = catchAsync(async (req, res) => {
 });
 
 export const updateCampground = catchAsync(async (req, res) => {
+  const { id } = req.params;
   const campground = await Campground.findByIdAndUpdate(req.params.id, {
     ...req.body.campground,
   });

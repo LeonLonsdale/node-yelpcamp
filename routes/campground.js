@@ -9,7 +9,7 @@ import {
   renderNewCampgroundForm,
   renderUpdateCampgroundForm,
 } from '../controllers/campground.js';
-import { isLoggedIn } from '../controllers/auth.js';
+import { isLoggedIn, isAuthor } from '../controllers/auth.js';
 
 export const router = Router();
 
@@ -23,7 +23,7 @@ router.route('/new').get(isLoggedIn, renderNewCampgroundForm);
 router
   .route('/:id')
   .get(showCampground)
-  .put(isLoggedIn, validateCampground, updateCampground)
-  .delete(isLoggedIn, deleteCampground);
+  .put(isLoggedIn, isAuthor, validateCampground, updateCampground)
+  .delete(isLoggedIn, isAuthor, deleteCampground);
 
-router.route('/:id/edit').get(isLoggedIn, renderUpdateCampgroundForm);
+router.route('/:id/edit').get(isLoggedIn, isAuthor, renderUpdateCampgroundForm);
