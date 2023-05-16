@@ -9,6 +9,7 @@ import session from 'express-session';
 import flash from 'connect-flash';
 import passport from 'passport';
 import localStrategy from 'passport-local';
+import multer from 'multer';
 
 // node modules
 import path from 'path';
@@ -35,6 +36,8 @@ const sessionOptions = {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+
+const upload = multer({ dest: 'uploads/' });
 
 // ### [ Create App ]
 
