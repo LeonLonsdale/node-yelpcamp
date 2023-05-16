@@ -1,6 +1,9 @@
 // ### [ Imports ]
 
 // packages
+import * as dotenv from 'dotenv';
+import * as exeDotEnv from './executeDotEnv.js';
+
 import express from 'express';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
@@ -9,7 +12,7 @@ import session from 'express-session';
 import flash from 'connect-flash';
 import passport from 'passport';
 import localStrategy from 'passport-local';
-import multer from 'multer';
+// import multer from 'multer';
 
 // node modules
 import path from 'path';
@@ -37,7 +40,7 @@ const sessionOptions = {
   },
 };
 
-const upload = multer({ dest: 'uploads/' });
+// const upload = multer({ dest: 'uploads/' });
 
 // ### [ Create App ]
 
@@ -86,5 +89,6 @@ app.all('*', (req, res, next) => {
 
 app.use((err, req, res, next) => {
   const { status = 500, message = 'Something went wrong', stack } = err;
+  console.log(err);
   res.status(status).render('error', { status, message, stack });
 });
