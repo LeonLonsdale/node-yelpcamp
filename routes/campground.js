@@ -15,10 +15,8 @@ import {
 import { isLoggedIn, isAuthor } from '../controllers/auth.js';
 
 const upload = multer({ storage });
-// const upload = multer({ dest: 'uploads/' });
-export const router = Router();
 
-console.dir(storage.cloudinary.config);
+export const router = Router();
 
 router
   .route('/')
@@ -26,7 +24,6 @@ router
   // .post(isLoggedIn, validateCampground, createCampground);
   // upload.array('image')
   .post(upload.array('image'), (req, res) => {
-    console.log(req.body, req.files);
     res.send('Shit worked');
   });
 
