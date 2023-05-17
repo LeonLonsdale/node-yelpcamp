@@ -21,11 +21,12 @@ export const router = Router();
 router
   .route('/')
   .get(showAllCampgrounds)
-  // .post(isLoggedIn, validateCampground, createCampground);
-  // upload.array('image')
-  .post(upload.array('image'), (req, res) => {
-    res.send('Shit worked');
-  });
+  .post(
+    isLoggedIn,
+    upload.array('image'),
+    validateCampground,
+    createCampground
+  );
 
 router.route('/new').get(isLoggedIn, renderNewCampgroundForm);
 
