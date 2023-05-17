@@ -23,7 +23,7 @@ router
   .get(showAllCampgrounds)
   .post(
     isLoggedIn,
-    upload.array('image'),
+    upload.array('image', 5),
     validateCampground,
     createCampground
   );
@@ -36,7 +36,7 @@ router
   .put(
     isLoggedIn,
     isAuthor,
-    upload.array('image'),
+    upload.array('image', 5),
     validateCampground,
     updateCampground
   )
