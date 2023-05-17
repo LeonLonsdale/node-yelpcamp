@@ -33,7 +33,13 @@ router.route('/new').get(isLoggedIn, renderNewCampgroundForm);
 router
   .route('/:id')
   .get(showCampground)
-  .put(isLoggedIn, isAuthor, validateCampground, updateCampground)
+  .put(
+    isLoggedIn,
+    isAuthor,
+    upload.array('image'),
+    validateCampground,
+    updateCampground
+  )
   .delete(isLoggedIn, isAuthor, deleteCampground);
 
 router.route('/:id/edit').get(isLoggedIn, isAuthor, renderUpdateCampgroundForm);

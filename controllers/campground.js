@@ -49,7 +49,7 @@ export const showCampground = catchAsync(async (req, res) => {
 
 export const updateCampground = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const campground = await Campground.findByIdAndUpdate(req.params.id, {
+  const campground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
   if (!campground) {
@@ -59,6 +59,12 @@ export const updateCampground = catchAsync(async (req, res) => {
     );
     return res.redirect('/campgrounds');
   }
+  const images = req.files.map((file) => ({
+    url: file.path,
+    filename: file.filename,
+  }));
+  campground.images.push(...images);
+  await campground.save();
   req.flash('success', 'Campground updated successfully');
   res.redirect(`/campgrounds/${campground._id}`);
 });
