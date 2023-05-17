@@ -1,6 +1,7 @@
 import { campgroundSchema } from '../JoiSchemas.js';
 import { Campground } from '../models/campground.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { cloudinary } from '../cloudinary/cloudinary.js';
 
 // Joi validation
 export const validateCampground = (req, res, next) => {
@@ -36,7 +37,6 @@ export const showCampground = catchAsync(async (req, res) => {
   const campground = await Campground.findById(req.params.id)
     .populate({ path: 'reviews', populate: { path: 'author' } })
     .populate('author');
-  console.log(campground);
   if (!campground) {
     req.flash(
       'error',
@@ -49,6 +49,9 @@ export const showCampground = catchAsync(async (req, res) => {
 
 export const updateCampground = catchAsync(async (req, res) => {
   const { id } = req.params;
+  console.log(req.body);
+
+  // update campground name/location/price/description
   const campground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
@@ -59,12 +62,27 @@ export const updateCampground = catchAsync(async (req, res) => {
     );
     return res.redirect('/campgrounds');
   }
+
+  // update campground images (new images)
   const images = req.files.map((file) => ({
     url: file.path,
     filename: file.filename,
   }));
   campground.images.push(...images);
   await campground.save();
+
+  // update campground images (delete images)
+  if (req.body.deleteImages) {
+    // delete from cloudinary
+    for (let filename of req.body.deleteImages) {
+      await cloudinary.uploader.destroy(filename);
+    }
+    // pull images out of the images array, where the filename is in the  req.body.deleteImages array
+    await campground.updateOne({
+      $pull: { images: { filename: { $in: req.body.deleteImages } } },
+    });
+  }
+
   req.flash('success', 'Campground updated successfully');
   res.redirect(`/campgrounds/${campground._id}`);
 });
