@@ -13,6 +13,7 @@
       data-coords="<%= campground.geometry.coordinates%>"
     ></div>
     <div class="card mb-3">
+      <% if (campground.images.length) { %>
       <div id="campgroundCarousel" class="carousel slide">
         <div class="carousel-inner">
           <% campground.images.forEach((image, i) => { %>
@@ -42,6 +43,9 @@
         </button>
         <%}%>
       </div>
+      <% } else { %>
+      <img src="https://fakeimg.pl/500x500?text=No+Images" alt="" />
+      <% } %>
       <div class="card-body">
         <h5 class="card-title"><%=campground.title%></h5>
         <p class="card-text"><%=campground.description%></p>
