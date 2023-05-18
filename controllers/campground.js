@@ -3,6 +3,10 @@ import { Campground } from '../models/campground.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { cloudinary } from '../cloudinary/cloudinary.js';
 import AppError from '../utils/AppError.js';
+import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding.js';
+
+const mapboxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
 // Joi validation
 export const validateCampground = (req, res, next) => {
@@ -22,15 +26,22 @@ export const showAllCampgrounds = catchAsync(async (req, res) => {
 });
 
 export const createCampground = catchAsync(async (req, res) => {
-  const campground = new Campground(req.body.campground);
-  campground.images = req.files.map((file) => ({
-    url: file.path,
-    filename: file.filename,
-  }));
-  campground.author = req.user._id;
-  await campground.save();
-  req.flash('success', 'Campground created successfully');
-  res.redirect(`campgrounds/${campground._id}`);
+  const geoData = await geocoder
+    .forwardGeocode({
+      query: req.body.campground.location,
+      limit: 1,
+    })
+    .send();
+  res.send(geoData.body.features[0].geometry.coordinates);
+  // const campground = new Campground(req.body.campground);
+  // campground.images = req.files.map((file) => ({
+  //   url: file.path,
+  //   filename: file.filename,
+  // }));
+  // campground.author = req.user._id;
+  // await campground.save();
+  // req.flash('success', 'Campground created successfully');
+  // res.redirect(`campgrounds/${campground._id}`);
 });
 
 // campground/:id
