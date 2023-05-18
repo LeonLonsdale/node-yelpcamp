@@ -47,11 +47,13 @@
       <img src="https://fakeimg.pl/500x500?text=No+Images" alt="" />
       <% } %>
       <div class="card-body">
-        <h5 class="card-title"><%=campground.title%></h5>
+        <h5 class="card-title" data-label-title><%=campground.title%></h5>
         <p class="card-text"><%=campground.description%></p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item text-muted"><%=campground.location%></li>
+        <li class="list-group-item text-muted" data-label-location>
+          <%=campground.location%>
+        </li>
         <li class="list-group-item">
           Submitted by: <%=campground.author.username %>
         </li>
