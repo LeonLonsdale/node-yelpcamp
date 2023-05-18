@@ -7,7 +7,11 @@
   <div
     class="col-6 <% if (!user && !campground.reviews.length) { %> offset-3 <% } %>"
   >
-    <div id="map" style="width: 400px; height: 300px"></div>
+    <div
+      id="map"
+      style="width: 400px; height: 300px"
+      data-coords="<%= campground.geometry.coordinates%>"
+    ></div>
     <div class="card mb-3">
       <div id="campgroundCarousel" class="carousel slide">
         <div class="carousel-inner">
