@@ -2,6 +2,7 @@ import { campgroundSchema } from '../JoiSchemas.js';
 import { Campground } from '../models/campground.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { cloudinary } from '../cloudinary/cloudinary.js';
+import AppError from '../utils/AppError.js';
 
 // Joi validation
 export const validateCampground = (req, res, next) => {
