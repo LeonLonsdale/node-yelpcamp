@@ -39,5 +39,15 @@
 </ul>
 <script>
   const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+  const campgrounds = {
+    features: <%-JSON.stringify(campgrounds
+      .map(campground =>
+        Object.keys(campground._doc)
+          .filter(key => key !== 'author' && key !== '_id' && key !== 'images' && key !== 'reviews' && key !== '__v')
+          .reduce((obj, key) => {
+            obj[key] = campground[key];
+            return obj;
+          }, {})))%>
+  };
 </script>
 <script src="scripts/clustermap.js"></script>
