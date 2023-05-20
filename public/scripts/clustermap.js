@@ -1,3 +1,28 @@
+const allGeoCoords = Array.from(document.querySelectorAll('[data-geometry]'));
+
+const campgrounds = {
+  features: [],
+};
+allGeoCoords.forEach((element) => {
+  const { dataset } = element;
+
+  const coordinates = dataset.geometry
+    .split(',')
+    .map((coords) => Number(coords));
+
+  const popupMarkup = dataset.mappopup;
+  const campground = {
+    geometry: {
+      type: 'Point',
+      coordinates,
+    },
+    properties: {
+      popupMarkup,
+    },
+  };
+  campgrounds.features.push(campground);
+});
+
 mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
   container: 'map',
