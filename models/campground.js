@@ -10,35 +10,56 @@ imageSchema.virtual('thumb').get(function () {
   return this.url.replace('/upload', '/upload/w_200');
 });
 
-const campgroundSchema = new Schema({
-  title: String,
-  price: Number,
-  description: String,
-  location: String,
-  geometry: {
-    type: {
-      type: String,
-      enum: ['Point'],
-      required: true,
+const opts = {
+  toObject: { virtuals: true },
+  toJSON: { virtuals: true },
+};
+
+const campgroundSchema = new Schema(
+  {
+    title: String,
+    images: [imageSchema],
+    geometry: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
-    coordinates: {
-      type: [Number],
-      required: true,
-    },
-  },
-  images: [imageSchema],
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  },
-  reviews: [
-    {
+    price: Number,
+    description: String,
+    location: String,
+    author: {
       type: Schema.Types.ObjectId,
-      ref: 'Review',
+      ref: 'User',
     },
-  ],
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Review',
+      },
+    ],
+  },
+  opts
+);
+
+// campgroundSchema.set('toObject', { virtuals: true });
+// campgroundSchema.set('toJSON', { virtuals: true });
+
+campgroundSchema.virtual('properties.popupMarkup').get(function () {
+  return `<strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+    <p style="margin-bottom: 0">${this.location}</p><p>$${this.price} / night</p>`;
 });
 
+// campgroundSchema.virtual('properties.popUpMarkup').get(function () {
+//   return `
+//     <strong><a href="/campgrounds/${this._id}">${this.title}</a><strong>
+//     <p>${this.description.substring(0, 20)}...</p>`;
+// });
 // ### [ Query Middleware ]
 
 // delete reviews on a campground when that campground is deleted.
