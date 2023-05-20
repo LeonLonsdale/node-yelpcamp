@@ -1,5 +1,5 @@
 <% layout('/layouts/boilerplate')%>
-<div id="map" style="width: 100%; height: 500px"></div>
+<div id="cluster-map"></div>
 <h1>All Campgrounds</h1>
 <a href="/campgrounds/new">Add Campground</a>
 <ul>
@@ -44,4 +44,10 @@
 <script>
   const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
 </script>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+  type="text/css"
+/>
 <script src="/scripts/clustermap.js"></script>

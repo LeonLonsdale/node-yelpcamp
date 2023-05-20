@@ -21,6 +21,7 @@ const map = new mapboxgl.Map({
   center: coords, // starting position [lng, lat]
   zoom: 9, // starting zoom
 });
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 const marker = new mapboxgl.Marker()
   .setLngLat(coords)
   .setPopup(popup)

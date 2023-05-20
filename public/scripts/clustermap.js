@@ -25,7 +25,7 @@ allGeoCoords.forEach((element) => {
 
 mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
-  container: 'map',
+  container: 'cluster-map',
   // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
   style: 'mapbox://styles/mapbox/light-v10',
   center: [-103.5917, 40.6699],
@@ -94,6 +94,15 @@ map.on('load', () => {
       'circle-stroke-color': '#fff',
     },
   });
+
+  map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+  map.addControl(
+    new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+    })
+  );
 
   // inspect a cluster on click
   map.on('click', 'clusters', (e) => {
