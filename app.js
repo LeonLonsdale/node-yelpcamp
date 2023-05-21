@@ -136,7 +136,7 @@ passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 app.use(methodOverride('_method'));
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(flash());
 
 // ### [ Custom Middleware ]
