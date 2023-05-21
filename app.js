@@ -40,11 +40,12 @@ const dbUrl =
     ? process.env.MONGODB_HOST
     : 'mongodb://localhost:27017/yelp-camp';
 
+const storeSecret = process.env.STORE_SECRET || 'veryverysecretstuffhereapple';
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   touchAfter: 24 * 60 * 60, // seconds
   crypto: {
-    secret: 'veryverysecretstuffhereapple',
+    secret: storeSecret,
   },
 });
 store.on('error', function (e) {
@@ -53,7 +54,7 @@ store.on('error', function (e) {
 const sessionOptions = {
   store,
   name: 'cgsid',
-  secret: 'veryverysecretstuffyoudontknowabout',
+  secret: storeSecret,
   resave: false,
   saveUninitialized: true,
   cookie: {
