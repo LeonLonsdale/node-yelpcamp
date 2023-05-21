@@ -105,6 +105,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ### [ Package Middleware ]
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 app.use(ExpressMongoSanitize());
 app.use(xss());
 app.use(
@@ -130,11 +135,6 @@ app.use(
   })
 );
 app.use(session(sessionOptions));
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 app.use(methodOverride('_method'));
 // app.use(morgan('dev'));
 app.use(flash());
