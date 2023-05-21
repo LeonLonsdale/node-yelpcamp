@@ -28,17 +28,21 @@ import AppError from './utils/AppError.js';
 import { router as campgroundsRouter } from './routes/campground.js';
 import { router as reviewsRouter } from './routes/review.js';
 import { router as usersRouter } from './routes/user.js';
-import { connect } from 'http2';
 
 // ### [ Declarations ]
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbUrl =
-  process.env.NODE_ENV === 'production'
-    ? process.env.MONGODB_HOST
-    : 'mongodb://localhost:27017/yelp-camp';
+const dbUrl = process.env.MONGODB_HOST || 'mongodb://localhost:27017/yelp-camp';
+const port = process.env.PORT || 3000;
+
+async function main() {
+  await connect(process.env.MONGODB_HOST).then(() =>
+    console.log('Connected to MongoDB')
+  );
+}
+await main().catch((err) => console.log('Error connecting to Mongo: ', err));
 
 const storeSecret = process.env.STORE_SECRET || 'veryverysecretstuffhereapple';
 const store = MongoStore.create({
@@ -92,26 +96,24 @@ const fontSrcUrls = [];
 
 // ### [ Create App ]
 
-export const app = express();
+const app = express();
 
 // ### [ Express Middleware ]
 
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ### [ Package Middleware ]
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 app.use(ExpressMongoSanitize());
 app.use(xss());
+app.use(session(sessionOptions));
+app.use(flash());
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -134,15 +136,15 @@ app.use(
     },
   })
 );
-app.use(session(sessionOptions));
-app.use(methodOverride('_method'));
-// app.use(morgan('dev'));
-app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 // ### [ Custom Middleware ]
 
 app.use((req, res, next) => {
-  console.log('BANANA');
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   res.locals.user = req.user;
@@ -151,10 +153,10 @@ app.use((req, res, next) => {
 
 // ### [ Routes ]
 
-app.get('/', (req, res) => res.render('home.ejs'));
+app.use('/', usersRouter);
 app.use('/campgrounds', campgroundsRouter);
 app.use('/campgrounds/:id/reviews', reviewsRouter);
-app.use('/', usersRouter);
+app.get('/', (req, res) => res.render('home.ejs'));
 
 app.all('*', (req, res, next) => {
   next(new AppError('Page not found', 404));
@@ -164,3 +166,5 @@ app.use((err, req, res, next) => {
   const { status = 500, message = 'Something went wrong', stack } = err;
   res.status(status).render('error', { status, message, stack });
 });
+
+app.listen(port, () => console.log(`Server running on ${port}`));
