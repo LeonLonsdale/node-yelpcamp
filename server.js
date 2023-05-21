@@ -1,20 +1,21 @@
 // ### [ Imports]
 
 // packages
-import mongoose, {connect} from 'mongoose';
+import mongoose, { connect } from 'mongoose';
 
 // custom modules
-import {app} from './app.js';
+import { app } from './app.js';
 
 // ### [ Server Connections ]
-
+const DB_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.MONGODB_HOST
+    : 'mongodb://localhost:27017/yelp-camp';
 const port = 3000;
 
 // database
 async function main() {
-  await connect('mongodb://localhost:27017/yelp-camp').then(() =>
-    console.log('Connected to MongoDB')
-  );
+  await connect(DB_URL).then(() => console.log('Connected to MongoDB'));
 }
 await main().catch((err) => console.log('Error connecting to Mongo: ', err));
 

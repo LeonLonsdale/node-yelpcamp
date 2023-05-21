@@ -12,6 +12,10 @@ import session from 'express-session';
 import flash from 'connect-flash';
 import passport from 'passport';
 import localStrategy from 'passport-local';
+import ExpressMongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import helmet from 'helmet';
+import MongoStore from 'connect-mongo';
 // import multer from 'multer';
 
 // node modules
@@ -24,12 +28,31 @@ import AppError from './utils/AppError.js';
 import { router as campgroundsRouter } from './routes/campground.js';
 import { router as reviewsRouter } from './routes/review.js';
 import { router as usersRouter } from './routes/user.js';
+import { connect } from 'http2';
 
 // ### [ Declarations ]
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const dbUrl =
+  process.env.NODE_ENV === 'production'
+    ? process.env.MONGODB_HOST
+    : 'mongodb://localhost:27017/yelp-camp';
+
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60, // seconds
+  crypto: {
+    secret: 'veryverysecretstuffhereapple',
+  },
+});
+store.on('error', function (e) {
+  console.log('Session store error');
+});
 const sessionOptions = {
+  store,
+  name: 'cgsid',
   secret: 'veryverysecretstuffyoudontknowabout',
   resave: false,
   saveUninitialized: true,
@@ -39,6 +62,30 @@ const sessionOptions = {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+const scriptSrcUrls = [
+  'https://stackpath.bootstrapcdn.com/',
+  'https://api.tiles.mapbox.com/',
+  'https://api.mapbox.com/',
+  'https://kit.fontawesome.com/',
+  'https://cdnjs.cloudflare.com/',
+  'https://cdn.jsdelivr.net',
+];
+const styleSrcUrls = [
+  'https://kit-free.fontawesome.com/',
+  'https://stackpath.bootstrapcdn.com/',
+  'https://api.mapbox.com/',
+  'https://api.tiles.mapbox.com/',
+  'https://fonts.googleapis.com/',
+  'https://use.fontawesome.com/',
+  'https://cdn.jsdelivr.net',
+];
+const connectSrcUrls = [
+  'https://api.mapbox.com/',
+  'https://a.tiles.mapbox.com/',
+  'https://b.tiles.mapbox.com/',
+  'https://events.mapbox.com/',
+];
+const fontSrcUrls = [];
 
 // const upload = multer({ dest: 'uploads/' });
 
@@ -57,6 +104,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ### [ Package Middleware ]
 
+app.use(ExpressMongoSanitize());
+app.use(xss());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [],
+        connectSrc: ["'self'", ...connectSrcUrls],
+        scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+        'style-src': ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+        workerSrc: ["'self'", 'blob:'],
+        objectSrc: [],
+        imgSrc: [
+          "'self'",
+          'blob:',
+          'data:',
+          'https://res.cloudinary.com/dgfnzfd9q/',
+          'https://images.unsplash.com',
+        ],
+        fontSrc: ["'self'", ...fontSrcUrls],
+      },
+    },
+  })
+);
 app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());

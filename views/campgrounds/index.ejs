@@ -16,12 +16,14 @@
           src="<%=campground.images[0].url%>"
           class="img-fluid rounded-start"
           alt="..."
+          crossorigin="anonymous"
         />
         <% } else { %>
         <img
           src="https://fakeimg.pl/500x500?text=No+Images"
           class="img-fluid rounded-start"
           alt="..."
+          crossorigin="anonymous"
         />
         <% } %>
       </div>
@@ -44,8 +46,12 @@
 <script>
   const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
 </script>
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+<script
+  crossorigin="anonymous"
+  src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"
+></script>
 <link
+  crossorigin="anonymous"
   rel="stylesheet"
   href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
   type="text/css"

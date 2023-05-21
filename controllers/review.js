@@ -2,6 +2,7 @@ import { reviewSchema } from '../JoiSchemas.js';
 import { Review } from '../models/review.js';
 import { Campground } from '../models/campground.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import AppError from '../utils/AppError.js';
 
 // Joi validation
 
