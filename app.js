@@ -142,9 +142,9 @@ app.use(flash());
 // ### [ Custom Middleware ]
 
 app.use((req, res, next) => {
+  console.log('BANANA');
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
-  console.log(req.user);
   res.locals.user = req.user;
   next();
 });

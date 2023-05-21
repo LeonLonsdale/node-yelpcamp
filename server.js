@@ -15,7 +15,9 @@ const port = process.env.PORT || 3000;
 
 // database
 async function main() {
-  await connect(DB_URL).then(() => console.log('Connected to MongoDB'));
+  await connect(process.env.MONGODB_HOST).then(() =>
+    console.log('Connected to MongoDB')
+  );
 }
 await main().catch((err) => console.log('Error connecting to Mongo: ', err));
 
